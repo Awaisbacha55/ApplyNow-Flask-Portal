@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}ApplyNow — Job Application Portal{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="careers">
+    <div class="hero-content">
+        <span class="hero-badge">CAREER OPPORTUNITIES</span>
+        <h1 class="hero-title">Take the Next Step in Your Career</h1>
+        <p class="hero-subtitle">Tell us about yourself, share your experience, and apply for an opportunity that matches your ambitions.</p>
+        
+        <div class="hero-indicators">
+            <div class="indicator">
+                <i data-lucide="check-circle-2"></i>
+                <span>Simple Application Process</span>
+            </div>
+            <div class="indicator">
+                <i data-lucide="layers"></i>
+                <span>Multiple Career Paths</span>
+            </div>
+            <div class="indicator">
+                <i data-lucide="mail-check"></i>
+                <span>Application Confirmation</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form Section -->
+<section class="form-section" id="application-form">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>Job Application</h2>
+            <p>Complete the form below to submit your application.</p>
+        </div>
+
+        <form action="{{ url_for('apply') }}" method="POST" id="job-application-form" novalidate>
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <!-- Section 1: Personal Information -->
+            <div class="form-section-group">
+                <h3><i data-lucide="user"></i> Personal Information</h3>
+                
+                <div class="form-group">
+                    <label for="full_name" class="form-label">Full Name <span class="required">*</span></label>
+                    <input type="text" id="full_name" name="full_name" class="form-control {% if errors and 'full_name' in errors %}is-invalid{% endif %}" 
+                           placeholder="Enter your full name" required minlength="2" 
+                           value="{{ form_data.get('full_name', '') if form_data else '' }}">
+                    {% if errors and 'full_name' in errors %}
+                        <div class="error-feedback">{{ errors['full_name'] }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" class="form-control {% if errors and 'email' in errors %}is-invalid{% endif %}" 
+                           placeholder="you@example.com" required 
+                           value="{{ form_data.get('email', '') if form_data else '' }}">
+                    {% if errors and 'email' in errors %}
+                        <div class="error-feedback">{{ errors['email'] }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section 2: Position and Experience -->
+            <div class="form-section-group">
+                <h3><i data-lucide="briefcase"></i> Position and Experience</h3>
+                
+                <div class="form-group">
+                    <label for="position" class="form-label">Position Applying For <span class="required">*</span></label>
+                    <div class="select-wrapper">
+                        <select id="position" name="position" class="form-control {% if errors and 'position' in errors %}is-invalid{% endif %}" required>
+                            <option value="" disabled {% if not form_data or not form_data.get('position') %}selected{% endif %}>Select a position</option>
+                            {% for pos in positions %}
+                                <option value="{{ pos }}" {% if form_data and form_data.get('position') == pos %}selected{% endif %}>{{ pos }}</option>
+                            {% endfor %}
+                        </select>
+                        <i data-lucide="chevron-down" class="select-icon"></i>
+                    </div>
+                    {% if errors and 'position' in errors %}
+                        <div class="error-feedback">{{ errors['position'] }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Experience Level <span class="required">*</span></label>
+                    <div class="radio-group">
+                        {% for exp in experience_levels %}
+                        <label class="radio-card">
+                            <input type="radio" name="experience_level" value="{{ exp }}" required
+                                   {% if form_data and form_data.get('experience_level') == exp %}checked{% endif %}>
+                            <span class="radio-content">
+                                <span class="radio-circle"></span>
+                                <span class="radio-label">{{ exp }}</span>
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if errors and 'experience' in errors %}
+                        <div class="error-feedback" style="display: block; margin-top: 0.5rem;">{{ errors['experience'] }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section 3: Your Application -->
+            <div class="form-section-group">
+                <h3><i data-lucide="file-text"></i> Your Application</h3>
+                
+                <div class="form-group">
+                    <label for="cover_letter" class="form-label">Cover Letter <span class="required">*</span></label>
+                    <textarea id="cover_letter" name="cover_letter" class="form-control {% if errors and 'cover_letter' in errors %}is-invalid{% endif %}" 
+                              placeholder="Briefly introduce yourself, describe your relevant skills, and explain why you are a good fit for this position." 
+                              required minlength="30" maxlength="2000" rows="6">{{ form_data.get('cover_letter', '') if form_data else '' }}</textarea>
+                    
+                    <div class="textarea-footer">
+                        {% if errors and 'cover_letter' in errors %}
+                            <div class="error-feedback">{{ errors['cover_letter'] }}</div>
+                        {% else %}
+                            <div></div> <!-- Spacer -->
+                        {% endif %}
+                        <div class="char-counter">
+                            <span id="char-count">0</span> / 2000
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="consent" name="consent" value="yes" required
+                               {% if form_data and form_data.get('consent') %}checked{% endif %}>
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">I confirm that the information provided is accurate and may be used to process my application. <span class="required">*</span></span>
+                    </label>
+                    {% if errors and 'consent' in errors %}
+                        <div class="error-feedback">{{ errors['consent'] }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
+                    <span>Submit Application</span>
+                    <i data-lucide="send" class="btn-icon"></i>
+                    <div class="loader"></div>
+                </button>
+                <p class="privacy-note"><i data-lucide="shield-check"></i> Your information will be securely processed and used solely for recruitment purposes.</p>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

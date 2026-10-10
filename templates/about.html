@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}About ApplyNow{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="content-card">
+        <h1>About ApplyNow</h1>
+        <p class="lead">ApplyNow is a professional, demonstration-grade recruitment portal designed to showcase industry best practices in web development.</p>
+        
+        <div class="about-content">
+            <h3>Our Mission</h3>
+            <p>Our mission is to provide a seamless, secure, and intuitive application experience for candidates while demonstrating robust backend form processing using the Python Flask ecosystem.</p>
+            
+            <h3>Technical Implementation</h3>
+            <p>This platform serves as a practical implementation of <strong>Task 2: Form Handling and POST Requests</strong>. It successfully demonstrates:</p>
+            <ul>
+                <li><strong>Secure POST Requests:</strong> Handling sensitive form data securely in the HTTP body.</li>
+                <li><strong>Server-Side Validation:</strong> Ensuring data integrity and sanitization before persistence.</li>
+                <li><strong>Post/Redirect/Get Pattern:</strong> Preventing duplicate submissions upon browser refresh.</li>
+                <li><strong>Database Persistence:</strong> Storing applications securely in SQLite using parameterized queries to prevent SQL injection.</li>
+            </ul>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
